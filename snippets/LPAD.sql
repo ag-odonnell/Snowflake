@@ -1,0 +1,11 @@
+-- VISUALIZE LPAD (Left Pad)
+SELECT 
+    DGNS_DRG_CD_IN,
+    LPAD(TO_VARCHAR(DGNS_DRG_CD_IN), 3, '0') AS DGNS_DRG_CD
+FROM (
+    SELECT COLUMN1 AS DGNS_DRG_CD_IN
+    FROM VALUES 
+        (5),
+        (18),
+        (628)
+);
