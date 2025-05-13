@@ -7,7 +7,7 @@ CREATE OR REPLACE TABLE EMPLOYEE_SALES_LONG (
     RETURNS NUMBER
 );
 
--- Step 00: Insert sample data
+-- Step 1: Insert sample data
 INSERT INTO EMPLOYEE_SALES_LONG (EMPLOYEE, MONTH, SALES, RETURNS) VALUES
   ('Alice', 202501, 100, 10),  -- January
   ('Alice', 202502, 120, 20),  -- February
@@ -23,19 +23,7 @@ SELECT * FROM EMPLOYEE_SALES_LONG;
 --##########################################################################
 
 CREATE OR REPLACE TABLE EMPLOYEE_SALES_WIDE AS
--- Step 1: Extract numeric month from YYYYMM
-WITH 
-extracted AS (
-  SELECT
-    EMPLOYEE,
-    TO_NUMBER(RIGHT(MONTH::STRING, 2)) AS MO_NUM,
-    SALES,
-    RETURNS
-  FROM EMPLOYEE_SALES_LONG
-),
-
---##########################################################################
-
+WITH
 -- Step 2: Extract month + SALES only
 sales_base AS (
   SELECT
@@ -46,19 +34,7 @@ sales_base AS (
   GROUP BY EMPLOYEE, TO_NUMBER(RIGHT(MONTH::STRING, 2)), SALES
 ),
 
--- Step 3: Extract month + RETURNS only
-returns_base AS (
-  SELECT
-    EMPLOYEE,
-    TO_NUMBER(RIGHT(MONTH::STRING, 2)) AS MO_NUM,
-    RETURNS
-  FROM EMPLOYEE_SALES_LONG
-  GROUP BY EMPLOYEE, TO_NUMBER(RIGHT(MONTH::STRING, 2)), RETURNS
-),
-
---##########################################################################
-
--- Step 4: Pivot sales using MO_NUM as month key
+-- Step 3: Pivot sales using MO_NUM as month key
 sales_pivot AS (
   SELECT *
   FROM sales_base
@@ -66,6 +42,18 @@ sales_pivot AS (
     MAX(SALES)
     FOR MO_NUM IN (1, 2, 3, 4, 5)
   )
+),
+
+--##########################################################################
+
+-- Step 4: Extract month + RETURNS only
+returns_base AS (
+  SELECT
+    EMPLOYEE,
+    TO_NUMBER(RIGHT(MONTH::STRING, 2)) AS MO_NUM,
+    RETURNS
+  FROM EMPLOYEE_SALES_LONG
+  GROUP BY EMPLOYEE, TO_NUMBER(RIGHT(MONTH::STRING, 2)), RETURNS
 ),
 
 -- Step 5: Pivot returns using MO_NUM as month key
