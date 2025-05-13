@@ -17,7 +17,7 @@ INSERT INTO EMPLOYEE_SALES_LONG (EMPLOYEE, MONTH, SALES) VALUES
   ('Bob', 3, 90),
   ('Bob', 4, 110);
 
-SELECT * FROM EMPLOYEE_SALES_LONG
+SELECT * FROM EMPLOYEE_SALES_LONG;
 
 --##########################################################################
 
@@ -33,7 +33,7 @@ PIVOT (
     FOR MONTH IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
 );
 
-SELECT * FROM EMPLOYEE_SALES_WIDE
+SELECT * FROM EMPLOYEE_SALES_WIDE;
 
 --##########################################################################
 
@@ -61,4 +61,4 @@ SELECT
   "5"  AS SALES_05
 FROM pivoted;
 
-SELECT * FROM EMPLOYEE_SALES_WIDE
+SELECT * FROM EMPLOYEE_SALES_WIDE;
